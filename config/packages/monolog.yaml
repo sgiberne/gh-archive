@@ -1,0 +1,8 @@
+monolog:
+    channels: [ importEvents ]
+    handlers:
+        importEvents:
+            level: info
+            type: stream
+            path: '%kernel.logs_dir%/%kernel.environment%_import_events.log'
+            channels: [ importEvents ]
