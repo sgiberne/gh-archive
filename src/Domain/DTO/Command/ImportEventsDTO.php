@@ -3,15 +3,15 @@
 namespace App\Domain\DTO\Command;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Domain\Validator\Constraints as AppAssert;
 
 class ImportEventsDTO
 {
     /**
-     * @Assert\NotBlank
      * @Assert\Type("string")
      * @Assert\Length(19)
      * @Assert\DateTime()
-     * @Assert\LessThan("today")
+     * @AppAssert\LessThan("today")
      */
     public string $dateTime;
 

@@ -51,7 +51,7 @@ final class ImportEventsDispatcherCommand extends Command
 
         $this
             ->setDescription('Import GH Archive events from Big Query')
-            ->addArgument('dateTime', InputArgument::OPTIONAL, "A DateTime from today to the past to extract. Allowed format: $defaultFormat. Default: now", (new \DateTime())->format($defaultFormat))
+            ->addArgument('dateTime', InputArgument::OPTIONAL, "A DateTime from today to the past to extract. Allowed format: $defaultFormat. Default: yesterday", (new \DateTime())->modify('yesterday')->format($defaultFormat))
             ->addOption('offset', 'o', InputOption::VALUE_OPTIONAL, 'Offset', 0)
             ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit', 20000);
     }

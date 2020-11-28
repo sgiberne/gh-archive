@@ -44,9 +44,10 @@ class Event
     /**
      * @ORM\Column(type="datetime")
      * @Assert\NotBlank
+     * @Assert\DateTime
      * @Groups("api")
      */
-    private \DateTime $createdAt;
+    private ?\DateTime $createdAt;
 
 
     /**

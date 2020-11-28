@@ -8,6 +8,10 @@ class ActorFactory
 {
     public function createFromArray(array $data): Actor
     {
+        if (!isset($data['id'])) {
+            throw new \BadMethodCallException('An id must be defined');
+        }
+
         return (new Actor())
             ->setId($data['id'])
             ->setUrl($data['url'] ?? '')

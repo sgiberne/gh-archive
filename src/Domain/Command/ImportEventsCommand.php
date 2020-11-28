@@ -56,9 +56,11 @@ final class ImportEventsCommand extends Command
 
     protected function configure(): void
     {
+        $defaultFormat = (new DateTime())->format;
+
         $this
             ->setDescription('Import GH Archive events from Big Query')
-            ->addArgument('dateTime', InputArgument::OPTIONAL, 'A DateTime from today to the past to extract. Allowed format: YYYY/mm/dd HH:ii:ss. Default: now', new \DateTime())
+            ->addArgument('dateTime', InputArgument::OPTIONAL, "A DateTime from today to the past to extract. . Allowed format: $defaultFormat. Default: yesterday", (new \DateTime())->modify('yesterday')->format($defaultFormat))
             ->addOption('offset', null, InputOption::VALUE_OPTIONAL, 'Offset', 0)
             ->addOption('limit', null, InputOption::VALUE_OPTIONAL, 'Limit', 10000)
             ->addOption('clear', null , InputOption::VALUE_OPTIONAL, 'Clear tempory file', false);

@@ -19,6 +19,10 @@ class EventFactory
 
     public function createFromArray(array $data): Event
     {
+        if (!isset($data['id'])) {
+            throw new \BadMethodCallException('An id must be defined');
+        }
+
         $actor = isset($data['actor']) && !empty($data['actor']) ? $this->actorFactory->createFromArray($data['actor']) : null;
         $repository = isset($data['repo']) && !empty($data['repo']) ? $this->repositoryFactor->createFromArray($data['repo']) : null;
         $organisation = isset($data['org']) && !empty($data['org']) ? $this->organisationFactory->createFromArray($data['org']) : null;
@@ -31,6 +35,6 @@ class EventFactory
             ->setType($data['type'] ?? '')
             ->setPayload($data['payload'] ?? [])
             ->setPublic($data['public'] ?? true)
-            ->setCreatedAt($data['created_at'] ? new \DateTime($data['created_at']) : null);
+            ->setCreatedAt(isset($data['created_at']) ? new \DateTime($data['created_at']) : null);
     }
 }
