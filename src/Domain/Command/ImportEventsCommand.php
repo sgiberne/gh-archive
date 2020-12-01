@@ -63,7 +63,7 @@ final class ImportEventsCommand extends Command
             ->addArgument('dateTime', InputArgument::OPTIONAL, "A DateTime from today to the past to extract. . Allowed format: $defaultFormat. Default: yesterday", (new \DateTime())->modify('yesterday')->format($defaultFormat))
             ->addOption('offset', null, InputOption::VALUE_OPTIONAL, 'Offset', 0)
             ->addOption('limit', null, InputOption::VALUE_OPTIONAL, 'Limit', 10000)
-            ->addOption('clear', null , InputOption::VALUE_OPTIONAL, 'Clear tempory file', false);
+            ->addOption('clear', null, InputOption::VALUE_OPTIONAL, 'Clear tempory file', false);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -108,9 +108,9 @@ final class ImportEventsCommand extends Command
 
             $output->writeln("Built event {$event->getId()}");
             $this->entityManager->persist($event);
-            $nbPersisted++;
+            ++$nbPersisted;
 
-            if ($nbPersisted % self::FLUSH_AT === 0) {
+            if (0 === $nbPersisted % self::FLUSH_AT) {
                 $output->writeln('Write in database');
                 $this->entityManager->flush();
                 $this->entityManager->clear();

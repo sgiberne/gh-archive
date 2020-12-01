@@ -2,9 +2,7 @@
 
 namespace Tests\Domain\Factory\Data;
 
-use App\Domain\Entity\Actor;
 use App\Domain\Entity\Organisation;
-use App\Domain\Factory\Data\ActorFactory;
 use App\Domain\Factory\Data\OrganisationFactory;
 use PHPUnit\Framework\TestCase;
 
@@ -44,7 +42,7 @@ class OrganisationFactoryTest extends TestCase
                 ->setUrl('')
                 ->setAvatarUrl('')
                 ->setGravatarId('')
-                ->setLogin('')
+                ->setLogin(''),
         ];
 
         yield [
@@ -60,7 +58,7 @@ class OrganisationFactoryTest extends TestCase
                 ->setUrl('stephane.giberne.fr')
                 ->setAvatarUrl('stephane.giberne.fr/avatar.jpg')
                 ->setGravatarId('12345')
-                ->setLogin('sgiberne')
+                ->setLogin('sgiberne'),
         ];
     }
 

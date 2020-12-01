@@ -60,7 +60,7 @@ class EventBuilderTest extends TestCase
         );
         $event = $eventBuilder->build($data);
 
-        if ($expectedEvent === null) {
+        if (null === $expectedEvent) {
             $this->assertNull($event);
         } else {
             $this->assertInstanceOf(Event::class, $event);

@@ -2,8 +2,8 @@
 
 namespace App\Domain\DTO\Command;
 
-use Symfony\Component\Validator\Constraints as Assert;
 use App\Domain\Validator\Constraints as AppAssert;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ImportEventsDTO
 {

@@ -4,8 +4,6 @@ namespace Tests\DOmain\Validator\Constraints;
 
 use App\Domain\Validator\Constraints\LessThan;
 use App\Domain\Validator\Constraints\LessThanValidator;
-use App\Validator\Constraints\EventSortBy;
-use App\Validator\Constraints\EventSortByValidator;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 class LessThanValidatorTest extends ConstraintValidatorTestCase
@@ -17,7 +15,8 @@ class LessThanValidatorTest extends ConstraintValidatorTestCase
 
     /**
      * @dataProvider validDataProvider
-     * @var int|string|\DateTime $valueToValidate
+     *
+     * @var int|string|\DateTime
      */
     public function testValidate($valueToValidate, array $options): void
     {
@@ -28,7 +27,8 @@ class LessThanValidatorTest extends ConstraintValidatorTestCase
 
     /**
      * @dataProvider noValidDataProvider
-     * @var int|string|\DateTime $valueToValidate
+     *
+     * @var int|string|\DateTime
      */
     public function testNoValidate($valueToValidate, array $options): void
     {

@@ -20,7 +20,6 @@ class EventFactoryTest extends TestCase
      */
     public function testCreate(array $data, Event $expectedEvent): void
     {
-
         $event = $this->eventFactory->createFromArray($data);
 
         $this->assertEquals($event, $expectedEvent);

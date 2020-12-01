@@ -4,9 +4,9 @@ namespace App\Domain\Entity;
 
 use App\Domain\Repository\EventRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=EventRepository::class)
@@ -48,7 +48,6 @@ class Event
      * @Groups("api")
      */
     private ?\DateTime $createdAt;
-
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Domain\Entity\Repository", cascade={"persist"})

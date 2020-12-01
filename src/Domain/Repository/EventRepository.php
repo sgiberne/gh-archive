@@ -19,20 +19,20 @@ final class EventRepository extends ServiceEntityRepository
     {
         $queryBuilder = $this->createQueryBuilder('e');
 
-        if ($limit !== null) {
+        if (null !== $limit) {
             $queryBuilder->setMaxResults($limit);
         }
 
-        if ($offset !== null) {
+        if (null !== $offset) {
             $queryBuilder->setFirstResult($offset);
         }
 
-        if ($sort !== null) {
+        if (null !== $sort) {
             $queryBuilder->orderBy("e.$sort", $order);
         }
 
         foreach ($criteria as $key => $criterion) {
-            if ($key === 'createdAt' && $criterion instanceof DateTime) {
+            if ('createdAt' === $key && $criterion instanceof DateTime) {
                 // fait la recherche sur la journée
                 $startDate = clone $criterion->setTime(0, 0, 0);
                 $endDate = clone $criterion->setTime(23, 59, 59);
@@ -41,7 +41,7 @@ final class EventRepository extends ServiceEntityRepository
                     ->andWhere("e.$key <= :endDate")
                     ->setParameter('startDate', $startDate)
                     ->setParameter('endDate', $endDate);
-            } else if ($key === 'payload') {
+            } elseif ('payload' === $key) {
                 // cherche dans le json du payload
                 $dataCriterion = json_decode($criterion, true, 512, JSON_THROW_ON_ERROR);
                 $candidate = current($dataCriterion);

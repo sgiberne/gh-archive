@@ -19,9 +19,8 @@ class RequestFilterDTOFactory
         $filters = $this->requestStack->getMasterRequest()->get('filters', []);
 
         // Transform createdAt to DateTime
-        foreach ($filters as $key => $filter)
-        {
-            if ($key === 'createdAt') {
+        foreach ($filters as $key => $filter) {
+            if ('createdAt' === $key) {
                 $filters[$key] = new \DateTime($filter);
             }
         }

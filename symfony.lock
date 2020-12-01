@@ -2,6 +2,12 @@
     "composer/package-versions-deprecated": {
         "version": "1.11.99.1"
     },
+    "composer/semver": {
+        "version": "3.2.4"
+    },
+    "composer/xdebug-handler": {
+        "version": "1.4.5"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -62,8 +68,23 @@
     "doctrine/sql-formatter": {
         "version": "1.1.1"
     },
+    "friendsofphp/php-cs-fixer": {
+        "version": "2.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.2",
+            "ref": "cc05ab6abf6894bddb9bbd6a252459010ebe040b"
+        },
+        "files": [
+            ".php_cs.dist"
+        ]
+    },
     "monolog/monolog": {
         "version": "2.1.1"
+    },
+    "php-cs-fixer/diff": {
+        "version": "v1.3.1"
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -202,6 +223,9 @@
             "config/packages/test/monolog.yaml"
         ]
     },
+    "symfony/options-resolver": {
+        "version": "v5.1.9"
+    },
     "symfony/orm-pack": {
         "version": "v2.0.0"
     },
@@ -260,6 +284,9 @@
     },
     "symfony/service-contracts": {
         "version": "v2.2.0"
+    },
+    "symfony/stopwatch": {
+        "version": "v5.1.9"
     },
     "symfony/string": {
         "version": "v5.1.8"

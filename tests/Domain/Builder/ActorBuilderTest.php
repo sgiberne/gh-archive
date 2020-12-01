@@ -23,7 +23,7 @@ class ActorBuilderTest extends TestCase
         $actorBuilder = new ActorBuilder($actorRepositoryMock, new ActorFactory());
         $actor = $actorBuilder->build($data);
 
-        if ($expectedActor === null) {
+        if (null === $expectedActor) {
             $this->assertNull($actor);
         } else {
             $this->assertInstanceOf(Actor::class, $actor);

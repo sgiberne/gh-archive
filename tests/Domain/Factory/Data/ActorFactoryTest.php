@@ -43,7 +43,7 @@ class ActorFactoryTest extends TestCase
                 ->setAvatarUrl('')
                 ->setGravatarId('')
                 ->setLogin('')
-                ->setDisplayLogin('')
+                ->setDisplayLogin(''),
         ];
 
         yield [
@@ -61,7 +61,7 @@ class ActorFactoryTest extends TestCase
                 ->setAvatarUrl('stephane.giberne.fr/avatar.jpg')
                 ->setGravatarId('12345')
                 ->setLogin('sgiberne')
-                ->setDisplayLogin('sgiberne')
+                ->setDisplayLogin('sgiberne'),
         ];
     }
 

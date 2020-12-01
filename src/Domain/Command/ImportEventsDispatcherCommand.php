@@ -42,7 +42,6 @@ final class ImportEventsDispatcherCommand extends Command
         $this->validator = $validator;
         $this->logger = $importEventsLogger;
         parent::__construct($name);
-
     }
 
     protected function configure(): void
@@ -99,6 +98,7 @@ final class ImportEventsDispatcherCommand extends Command
         }
 
         $output->writeln('Done');
+
         return Command::SUCCESS;
     }
 }

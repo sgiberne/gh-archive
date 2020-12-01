@@ -11,7 +11,7 @@ class LessThanValidator extends SymfonyLessThanValidator
      */
     protected function compareValues($value1, $value2): bool
     {
-        if ($value2 === 'today') {
+        if ('today' === $value2) {
             $value2 = (new \DateTime())->format('Y-m-d 00:00:00');
         }
 

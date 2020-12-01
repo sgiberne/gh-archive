@@ -2,11 +2,7 @@
 
 namespace Tests\Domain\Factory\Data;
 
-use App\Domain\Entity\Actor;
-use App\Domain\Entity\Organisation;
 use App\Domain\Entity\Repository;
-use App\Domain\Factory\Data\ActorFactory;
-use App\Domain\Factory\Data\OrganisationFactory;
 use App\Domain\Factory\Data\RepositoryFactory;
 use PHPUnit\Framework\TestCase;
 
@@ -44,7 +40,7 @@ class RepositoryFactoryTest extends TestCase
             (new Repository())
                 ->setId(1)
                 ->setUrl('')
-                ->setName('')
+                ->setName(''),
         ];
 
         yield [
@@ -56,7 +52,7 @@ class RepositoryFactoryTest extends TestCase
             (new Repository())
                 ->setId(1)
                 ->setUrl('stephane.giberne.fr')
-                ->setName('sgiberne')
+                ->setName('sgiberne'),
         ];
     }
 

@@ -48,6 +48,6 @@ class GhArchiveConnection
         $filePath = $this->getFilePath();
         $bytes = file_put_contents($filePath, fopen($this->getFilenameForOneHour(), 'r'));
 
-        return $bytes === false ? 0 : $bytes;
+        return false === $bytes ? 0 : $bytes;
     }
 }

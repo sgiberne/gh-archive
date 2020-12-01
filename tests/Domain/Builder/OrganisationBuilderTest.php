@@ -2,13 +2,9 @@
 
 namespace Tests\Domain\Builder;
 
-use App\Domain\Builder\ActorBuilder;
 use App\Domain\Builder\OrganisationBuilder;
-use App\Domain\Entity\Actor;
 use App\Domain\Entity\Organisation;
-use App\Domain\Factory\Data\ActorFactory;
 use App\Domain\Factory\Data\OrganisationFactory;
-use App\Domain\Repository\ActorRepository;
 use App\Domain\Repository\OrganisationRepository;
 use PHPUnit\Framework\TestCase;
 
@@ -27,7 +23,7 @@ class OrganisationBuilderTest extends TestCase
         $organisationBuilder = new OrganisationBuilder($organisationRepositoryMock, new OrganisationFactory());
         $organisation = $organisationBuilder->build($data);
 
-        if ($expectedOrganisation === null) {
+        if (null === $expectedOrganisation) {
             $this->assertNull($organisation);
         } else {
             $this->assertInstanceOf(Organisation::class, $organisation);
