@@ -150,7 +150,7 @@ final class ImportEventsCommand extends Command
             throw new \RuntimeException("Event {$event->getId()} already exist");
         }
 
-        $event = $this->eventBuilder->createFromArray($eventData);
+        $event = $this->eventBuilder->build($eventData);
         $constraintViolationList = $this->validator->validate($event);
 
         if ($constraintViolationList->count() > 0) {

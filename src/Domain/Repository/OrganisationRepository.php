@@ -6,7 +6,7 @@ use App\Domain\Entity\Organisation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-final class OrganisationRepository extends ServiceEntityRepository
+class OrganisationRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

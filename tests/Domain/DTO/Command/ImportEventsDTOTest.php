@@ -35,7 +35,7 @@ class ImportEventsDTOTest extends TestCase
     public function provideValidImportEventsDTO(): iterable
     {
         yield [
-            $importEventsDTO = new ImportEventsDTO(
+            new ImportEventsDTO(
                 (new \DateTime())->modify('yesterday')->format('Y-m-d H:i:s'),
                 0,
                 10000
@@ -43,7 +43,7 @@ class ImportEventsDTOTest extends TestCase
         ];
 
         yield [
-            $importEventsDTO = new ImportEventsDTO(
+            new ImportEventsDTO(
                 (new \DateTime())->modify('- 10 days')->format('Y-m-d H:i:s'),
                 5000,
                 5000
@@ -54,7 +54,7 @@ class ImportEventsDTOTest extends TestCase
     public function provideInvalidImportEventsDTO(): iterable
     {
         yield [
-            $importEventsDTO = new ImportEventsDTO(
+            new ImportEventsDTO(
                 (new \DateTime())->modify('+ 10 days')->format('Y-m-d H:i:s'),
                 0,
                 10000
@@ -62,7 +62,7 @@ class ImportEventsDTOTest extends TestCase
         ];
 
         yield [
-            $importEventsDTO = new ImportEventsDTO(
+            new ImportEventsDTO(
                 (new \DateTime())->modify('- 10 days')->format('Y-m-d H:i:s'),
                 -1,
                 10000
@@ -70,7 +70,7 @@ class ImportEventsDTOTest extends TestCase
         ];
 
         yield [
-            $importEventsDTO = new ImportEventsDTO(
+            new ImportEventsDTO(
                 (new \DateTime())->modify('- 10 days')->format('Y-m-d H:i:s'),
                 10000,
                 0

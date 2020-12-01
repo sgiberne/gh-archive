@@ -20,7 +20,7 @@ class EventBuilder
         $this->repositoryBuilder = $repositoryBuilder;
     }
 
-    public function createFromArray(array $data): ?Event
+    public function build(array $data): ?Event
     {
         if (empty($data['id'])) {
             return null;
@@ -34,6 +34,6 @@ class EventBuilder
             ->setType($data['type'] ?? '')
             ->setPayload($data['payload'] ?? [])
             ->setPublic($data['public'] ?? true)
-            ->setCreatedAt($data['created_at'] ? new \DateTime($data['created_at']) : null);
+            ->setCreatedAt(isset($data['created_at']) ? new \DateTime($data['created_at']) : null);
     }
 }

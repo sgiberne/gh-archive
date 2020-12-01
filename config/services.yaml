@@ -18,8 +18,8 @@ services:
     App\:
         resource: '../src/'
         exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Domain/Entity/'
+            - '../src/Domain/DependencyInjection/'
+            - '../src/Domain/Domain/Entity/'
             - '../src/Kernel.php'
             - '../src/Tests/'
 
