@@ -20,6 +20,9 @@
         "symfony/validator": "5.1.*",
         "symfony/yaml": "5.1.*"
     },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^5.1"
+    },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": {
@@ -56,6 +59,9 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "test": [
+            "bin/phpunit tests"
         ]
     },
     "conflict": {
@@ -66,8 +72,5 @@
             "allow-contrib": false,
             "require": "5.1.*"
         }
-    },
-    "require-dev": {
-        "symfony/phpunit-bridge": "^5.1"
     }
 }
