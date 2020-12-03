@@ -3,6 +3,7 @@
 namespace App\Domain\Entity;
 
 use App\Domain\Repository\ActorRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -53,6 +54,16 @@ class Actor
      * @Groups("api")
      */
     private ?string $avatarUrl;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Domain\Entity\Event", mappedBy="actor")
+     */
+    private Collection $events;
+
+    public function __construct()
+    {
+        $this->events = new ArrayCollection();
+    }
 
     public function getId(): int
     {

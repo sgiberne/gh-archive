@@ -50,7 +50,7 @@ class Organisation
     private ?string $avatarUrl;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Domain\Entity\Event", mappedBy="actor", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Domain\Entity\Event", mappedBy="organisation")
      */
     private Collection $events;
 
