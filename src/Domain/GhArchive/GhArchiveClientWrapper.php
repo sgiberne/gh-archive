@@ -63,8 +63,8 @@ class GhArchiveClientWrapper
         return $this->tmpDir.DIRECTORY_SEPARATOR.$this->ghArchiveConnection->getFilenameForOneHour();
     }
 
-    public function removeStoredFile(): bool
+    public function removeStoredFile(): void
     {
-        return unlink($this->getStoredFilePath());
+        $this->filesystem->remove($this->getStoredFilePath());
     }
 }

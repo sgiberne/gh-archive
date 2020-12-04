@@ -4,14 +4,19 @@ namespace App\Domain\GhArchive;
 
 class GhArchiveConfiguration
 {
-    private const HOST = 'https://data.gharchive.org';
     private const FILE_TYPE = '.json.gz';
 
+    private string $ghArchiveHost;
     private \DateTime $dateTime;
+
+    public function __construct(string $ghArchiveHost)
+    {
+        $this->ghArchiveHost = $ghArchiveHost;
+    }
 
     public function getHost(): string
     {
-        return self::HOST;
+        return $this->ghArchiveHost;
     }
 
     public function getFileType(): string
