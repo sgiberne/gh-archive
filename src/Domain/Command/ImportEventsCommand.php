@@ -71,7 +71,7 @@ final class ImportEventsCommand extends Command
             throw new \RuntimeException('Invalid type given');
         }
 
-        $importEventsDTO = new ImportEventsDTO($dateTime, (int)$offset, (int)$limit);
+        $importEventsDTO = new ImportEventsDTO($dateTime, (int) $offset, (int) $limit);
 
         $constraintViolationList = $this->validator->validate($importEventsDTO);
 
@@ -82,7 +82,7 @@ final class ImportEventsCommand extends Command
 
         $dateTime = \DateTime::createFromFormat((new DateTime())->format, $importEventsDTO->dateTime);
 
-        if ($dateTime === false) {
+        if (false === $dateTime) {
             throw new \RuntimeException('Invalid dateTime');
         }
 
@@ -168,7 +168,7 @@ final class ImportEventsCommand extends Command
 
         if ($constraintViolationList->count() > 0) {
             $this->logger->warning('Constraint violation', ['violations' => $constraintViolationList]);
-            throw new \RuntimeException("Constraint violation");
+            throw new \RuntimeException('Constraint violation');
         }
 
         return $event;

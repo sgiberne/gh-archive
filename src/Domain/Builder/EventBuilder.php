@@ -22,7 +22,7 @@ class EventBuilder
 
     /**
      * @param array<string, int|string|array> $data
-     * @return Event|null
+     *
      * @throws \Exception
      */
     public function build(array $data): ?Event
@@ -36,11 +36,11 @@ class EventBuilder
         $actor = isset($data['actor']) && !empty($data['actor']) && is_array($data['actor']) ? $this->actorBuilder->build($data['actor']) : null;
 
         $event = (new Event())
-            ->setId((int)$data['id'])
+            ->setId((int) $data['id'])
             ->setRepository($repository)
             ->setOrganisation($organisation)
             ->setActor($actor)
-            ->setPublic(isset($data['public']) ? (bool)$data['public'] : false);
+            ->setPublic(isset($data['public']) ? (bool) $data['public'] : false);
 
         if (isset($data['payload']) && is_array($data['payload'])) {
             $event->setPayload($data['payload']);

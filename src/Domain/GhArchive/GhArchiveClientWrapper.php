@@ -27,7 +27,7 @@ class GhArchiveClientWrapper
 
     public function setDateTime(\DateTime $dateTime): self
     {
-        $hour = (int)$dateTime->format('H');
+        $hour = (int) $dateTime->format('H');
         $dateTime->setTime($hour, 0, 0);
         $this->ghArchiveConnection->getGhArchiveConfiguration()->setDateTime($dateTime);
 

@@ -60,7 +60,7 @@ final class ImportEventsDispatcherCommand extends Command
             throw new \RuntimeException('Invalid type given');
         }
 
-        $importEventsDTO = new ImportEventsDTO($dateTime, (int)$offset, (int)$limit);
+        $importEventsDTO = new ImportEventsDTO($dateTime, (int) $offset, (int) $limit);
 
         $constraintViolationList = $this->validator->validate($importEventsDTO);
 
@@ -71,7 +71,7 @@ final class ImportEventsDispatcherCommand extends Command
 
         $dateTime = \DateTime::createFromFormat((new DateTime())->format, $importEventsDTO->dateTime);
 
-        if ($dateTime === false) {
+        if (false === $dateTime) {
             throw new \RuntimeException('Invalid dateTime');
         }
 

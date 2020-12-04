@@ -32,6 +32,7 @@ class Event
     /**
      * @ORM\Column(type="json")
      * @Groups("api")
+     *
      * @var array<string, string|array>
      */
     private array $payload = [];
@@ -101,6 +102,7 @@ class Event
 
     /**
      * @param array<string, string|array> $payload
+     *
      * @return $this
      */
     public function setPayload(array $payload): self

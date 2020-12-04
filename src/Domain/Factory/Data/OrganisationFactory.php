@@ -8,7 +8,6 @@ class OrganisationFactory
 {
     /**
      * @param array<string, string|int> $data
-     * @return Organisation
      */
     public function createFromArray(array $data): Organisation
     {
@@ -17,10 +16,10 @@ class OrganisationFactory
         }
 
         return (new Organisation())
-            ->setId((int)$data['id'])
-            ->setLogin(isset($data['login']) ? (string)$data['login'] : '')
-            ->setGravatarId(isset($data['gravatar_id']) ? (string)$data['gravatar_id'] : '')
-            ->setAvatarUrl(isset($data['avatar_url']) ? (string)$data['avatar_url'] : '')
-            ->setUrl(isset($data['url']) ? (string)$data['url'] : '');
+            ->setId((int) $data['id'])
+            ->setLogin(isset($data['login']) ? (string) $data['login'] : '')
+            ->setGravatarId(isset($data['gravatar_id']) ? (string) $data['gravatar_id'] : '')
+            ->setAvatarUrl(isset($data['avatar_url']) ? (string) $data['avatar_url'] : '')
+            ->setUrl(isset($data['url']) ? (string) $data['url'] : '');
     }
 }

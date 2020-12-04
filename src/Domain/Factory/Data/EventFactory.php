@@ -19,7 +19,7 @@ class EventFactory
 
     /**
      * @param array<string, string|int|array> $data
-     * @return Event
+     *
      * @throws \Exception
      */
     public function createFromArray(array $data): Event
@@ -29,15 +29,15 @@ class EventFactory
         }
 
         $actor = isset($data['actor']) && !empty($data['actor']) && is_array($data['actor']) ? $this->actorFactory->createFromArray($data['actor']) : null;
-        $repository = isset($data['repo']) && !empty($data['repo']) && is_array($data['repo'])  ? $this->repositoryFactor->createFromArray($data['repo']) : null;
+        $repository = isset($data['repo']) && !empty($data['repo']) && is_array($data['repo']) ? $this->repositoryFactor->createFromArray($data['repo']) : null;
         $organisation = isset($data['org']) && !empty($data['org']) && is_array($data['org']) ? $this->organisationFactory->createFromArray($data['org']) : null;
 
         $event = (new Event())
-            ->setId((int)$data['id'])
+            ->setId((int) $data['id'])
             ->setRepository($repository)
             ->setOrganisation($organisation)
             ->setActor($actor)
-            ->setPublic(isset($data['public']) ? (bool)$data['public'] : false);
+            ->setPublic(isset($data['public']) ? (bool) $data['public'] : false);
 
         if (isset($data['payload']) && is_array($data['payload'])) {
             $event->setPayload($data['payload']);

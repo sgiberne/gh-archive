@@ -38,6 +38,7 @@ class RequestFilterDTO
 
     /**
      * @AppAssert\EventFilterKeys()
+     *
      * @var array<string, string>
      */
     public array $filters;
@@ -50,10 +51,7 @@ class RequestFilterDTO
 
     /**
      * RequestFilterDTO constructor.
-     * @param int $page
-     * @param int $limit
-     * @param string $sortBy
-     * @param string $orderBy
+     *
      * @param array<string, string> $filters
      */
     public function __construct(int $page, int $limit, string $sortBy, string $orderBy, array $filters = [])

@@ -8,7 +8,6 @@ class RepositoryFactory
 {
     /**
      * @param array<string, string|int> $data
-     * @return Repository
      */
     public function createFromArray(array $data): Repository
     {
@@ -17,8 +16,8 @@ class RepositoryFactory
         }
 
         return (new Repository())
-            ->setId((int)$data['id'])
-            ->setUrl(isset($data['url']) ? (string)$data['url'] : '')
-            ->setName(isset($data['name']) ? (string)$data['name'] : '');
+            ->setId((int) $data['id'])
+            ->setUrl(isset($data['url']) ? (string) $data['url'] : '')
+            ->setName(isset($data['name']) ? (string) $data['name'] : '');
     }
 }

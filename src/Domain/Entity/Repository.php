@@ -39,6 +39,7 @@ class Repository
 
     /**
      * @ORM\OneToMany(targetEntity="App\Domain\Entity\Event", mappedBy="repository")
+     *
      * @var Collection<int, Event>
      */
     private Collection $events;

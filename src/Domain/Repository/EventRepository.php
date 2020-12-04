@@ -19,11 +19,7 @@ final class EventRepository extends ServiceEntityRepository
 
     /**
      * @param array<string, string|\DateTime> $criteria
-     * @param null|string $sort
-     * @param null|string $order
-     * @param int|null $limit
-     * @param int|null $offset
-     * @return QueryBuilder
+     *
      * @throws \JsonException
      */
     public function findByCriteriaQueryBuilder(array $criteria, string $sort = null, string $order = null, int $limit = null, int $offset = null): QueryBuilder
@@ -71,11 +67,9 @@ final class EventRepository extends ServiceEntityRepository
 
     /**
      * @param array<string, string|\DateTime> $criteria
-     * @param null|string $sort
-     * @param null|string $order
-     * @param int|null $limit
-     * @param int|null $offset
+     *
      * @return array<int, Event>
+     *
      * @throws \JsonException
      */
     public function findByCriteria(array $criteria, string $sort = null, string $order = null, int $limit = null, int $offset = null): array
@@ -85,7 +79,7 @@ final class EventRepository extends ServiceEntityRepository
 
     /**
      * @param array<string, string|\DateTime> $criteria
-     * @return int
+     *
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      * @throws \JsonException

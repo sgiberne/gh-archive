@@ -57,6 +57,7 @@ class Actor
 
     /**
      * @ORM\OneToMany(targetEntity="App\Domain\Entity\Event", mappedBy="actor")
+     *
      * @var Collection<int, Event>
      */
     private Collection $events;
