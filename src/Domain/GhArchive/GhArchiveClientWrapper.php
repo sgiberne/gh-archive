@@ -10,6 +10,8 @@ class GhArchiveClientWrapper
     private string $tmpDir;
     private GhArchiveConnection $ghArchiveConnection;
 
+    private array $content = [];
+
     public function __construct(string $tmpDir, Filesystem $filesystem, GhArchiveConnection $ghArchiveConnection)
     {
         $this->tmpDir = $tmpDir;
@@ -48,9 +50,20 @@ class GhArchiveClientWrapper
 
     public function getContent(): array
     {
+        if (!empty($this->content)) {
+            return $this->content;
+        }
+
         $filePath = $this->getStoredFilePath();
 
-        return $this->isStoredFileExists() ? gzfile($filePath) : [];
+        return $this->isStoredFileExists() ? $this->content = gzfile($filePath) : [];
+    }
+
+    public function count(): int
+    {
+        $this->getContent();
+
+        return count($this->content);
     }
 
     public function getFilepath(): string

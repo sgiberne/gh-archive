@@ -3,14 +3,12 @@
 namespace App\Tests\Domain\GhArchive;
 
 use App\Domain\GhArchive\GhArchiveClientWrapper;
-use App\Domain\GhArchive\GhArchiveConfiguration;
-use App\Domain\GhArchive\GhArchiveConnection;
+use App\Tests\GhArchiveProviderTrait;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Filesystem\Filesystem;
 
 class GhArchiveClientWrapperTest extends TestCase
 {
-    private const TMP_DIR = 'tests/data/tmp';
+    use GhArchiveProviderTrait;
 
     private ?GhArchiveClientWrapper $ghArchiveClientWrapper;
 
@@ -34,18 +32,6 @@ class GhArchiveClientWrapperTest extends TestCase
     public static function tearDownAfterClass(): void
     {
         self::createGhArchiveClientWrapper()->removeStoredFile();
-    }
-
-    private static function createGhArchiveClientWrapper(): GhArchiveClientWrapper
-    {
-        $fileSystem = new Filesystem();
-        $ghArchiveConfiguration = new GhArchiveConfiguration('tests/data');
-        $ghArchiveConnection = new GhArchiveConnection($ghArchiveConfiguration);
-
-        $ghArchiveClientWrapper = new GhArchiveClientWrapper(self::TMP_DIR, $fileSystem, $ghArchiveConnection);
-        $ghArchiveClientWrapper->setDateTime(new \DateTime('2020-10-01 22:00:00'));
-
-        return $ghArchiveClientWrapper;
     }
 
     public function testStoreFileDoesNotExist(): void
@@ -75,7 +61,7 @@ class GhArchiveClientWrapperTest extends TestCase
     public function testStoredFileDeleted(): void
     {
         $this->ghArchiveClientWrapper->removeStoredFile();
-        
+
         $this->assertFalse($this->ghArchiveClientWrapper->isStoredFileExists());
     }
 }
