@@ -19,6 +19,53 @@ class ImportEventsDispatcherCommandTest extends KernelTestCase
     private ?InMemoryTransport $transport;
     private ?GhArchiveClientWrapper $ghArchiveClientWrapper;
 
+    /**
+     * @dataProvider provideData
+     */
+    public function testExecute(int $offset, int $limit): void
+    {
+        $this->ghArchiveClientWrapper->storeFile();
+        $nbMessagesExpected = ceil(($this->ghArchiveClientWrapper->count() - $offset) / $limit);
+        $this->ghArchiveClientWrapper->removeStoredFile();
+
+        $command = $this->application->find('app:import:events-dispatcher');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            [
+                'dateTime' => self::$dateTimeToTest,
+                '--offset' => $offset,
+                '--limit' => $limit,
+            ]
+        );
+
+        $this->assertStringContainsString('Done', $commandTester->getDisplay());
+        $this->assertTrue($this->ghArchiveClientWrapper->isStoredFileExists());
+
+        $this->assertCount($nbMessagesExpected, $this->transport->get());
+    }
+
+    /**
+     * @dataProvider provideInvalidData
+     */
+    public function testExecuteFail(string $dateTime, string $offset, string $limit, string $expectedException, string $expectedMessage): void
+    {
+        $command = $this->application->find('app:import:events-dispatcher');
+        $commandTester = new CommandTester($command);
+
+        $this->expectException($expectedException);
+        $this->expectExceptionMessage($expectedMessage);
+
+        $commandTester->execute(
+            [
+                'dateTime' => $dateTime,
+                '--offset' => $offset,
+                '--limit' => $limit,
+            ]
+        );
+
+        $this->assertStringNotContainsString('Done', $commandTester->getDisplay());
+    }
+
     public function setUp(): void
     {
         $kernel = static::bootKernel();
@@ -56,33 +103,6 @@ class ImportEventsDispatcherCommandTest extends KernelTestCase
         self::createGhArchiveClientWrapper()->removeStoredFile();
     }
 
-    /**
-     * @dataProvider provideData
-     */
-    public function testExecute(int $offset, int $limit): void
-    {
-        $this->ghArchiveClientWrapper->storeFile();
-        $nbMessagesExpected = ceil(($this->ghArchiveClientWrapper->count() - $offset) / $limit);
-        $this->ghArchiveClientWrapper->removeStoredFile();
-
-        $command = $this->application->find('app:import:events-dispatcher');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(
-            [
-                'dateTime' => self::$dateTimeToTest,
-                '--offset' => $offset,
-                '--limit' => $limit,
-            ]
-        );
-
-        $output = $commandTester->getDisplay();
-
-        $this->assertStringContainsString('Done', $output);
-        $this->assertTrue($this->ghArchiveClientWrapper->isStoredFileExists());
-
-        $this->assertCount($nbMessagesExpected, $this->transport->get());
-    }
-
     public function provideData(): iterable
     {
         yield [
@@ -98,6 +118,41 @@ class ImportEventsDispatcherCommandTest extends KernelTestCase
         yield [
             10000,
             10000,
+        ];
+    }
+
+    public function provideInvalidData(): iterable
+    {
+        yield [
+            '2020-10-02 12:00:00',
+            0,
+            1000,
+            \RuntimeException::class,
+            'file does not exist',
+        ];
+
+        yield [
+            '2019-01-29 22:00:00',
+            0,
+            1000,
+            \RuntimeException::class,
+            'file does not exist',
+        ];
+
+        yield [
+            '2019-01-29 22:00:00',
+            'offset',
+            1000,
+            \TypeError::class,
+            'Argument 2 passed to App\Domain\DTO\Command\ImportEventsDTO::__construct() must be of the type int, string given',
+        ];
+
+        yield [
+            '2019-01-29 22:00:00',
+            12,
+            'limit',
+            \TypeError::class,
+            'Argument 3 passed to App\Domain\DTO\Command\ImportEventsDTO::__construct() must be of the type int, string given',
         ];
     }
 }

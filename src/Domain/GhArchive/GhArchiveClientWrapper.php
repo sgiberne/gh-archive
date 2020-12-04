@@ -36,6 +36,11 @@ class GhArchiveClientWrapper
     public function storeFile(): string
     {
         $newFile = $this->getStoredFilePath();
+
+        if (!$this->filesystem->exists($this->getFilepath())) {
+            throw new \RuntimeException($this->getFilepath().' file does not exist');
+        }
+
         $this->filesystem->dumpFile($newFile, file_get_contents($this->getFilepath()));
 
         return $newFile;
