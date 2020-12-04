@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\DOmain\Validator\Constraints;
+namespace App\Tests\Domain\Validator\Constraints;
 
 use App\Domain\Validator\Constraints\LessThan;
 use App\Domain\Validator\Constraints\LessThanValidator;

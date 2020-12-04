@@ -3,8 +3,9 @@
 namespace App\Domain\Command;
 
 use App\Domain\Builder\EventBuilder;
-use App\Domain\DependencyInjection\GhArchiveConfiguration;
-use App\Domain\DependencyInjection\GhArchiveConnection;
+use App\Domain\GhArchive\GhArchiveClientWrapper;
+use App\Domain\GhArchive\GhArchiveConfiguration;
+use App\Domain\GhArchive\GhArchiveConnection;
 use App\Domain\DTO\Command\ImportEventsDTO;
 use App\Domain\Entity\Event;
 use App\Domain\Repository\EventRepository;
@@ -27,6 +28,7 @@ final class ImportEventsCommand extends Command
     private const FLUSH_AT = 5000;
 
     private string $tmpDir;
+    private GhArchiveClientWrapper $ghArchiveClientWrapper;
     private EventRepository $eventRepository;
     private ValidatorInterface $validator;
     private EventBuilder $eventBuilder;
@@ -36,6 +38,7 @@ final class ImportEventsCommand extends Command
 
     public function __construct(
         string $tmpDir,
+        GhArchiveClientWrapper $ghArchiveClientWrapper,
         EventRepository $eventRepository,
         ValidatorInterface $validator,
         EventBuilder $eventBuilder,
@@ -45,6 +48,7 @@ final class ImportEventsCommand extends Command
         string $name = null
     ) {
         $this->tmpDir = $tmpDir;
+        $this->ghArchiveClientWrapper = $ghArchiveClientWrapper;
         $this->filesystem = $filesystem;
         $this->eventRepository = $eventRepository;
         $this->validator = $validator;
@@ -63,7 +67,7 @@ final class ImportEventsCommand extends Command
             ->addArgument('dateTime', InputArgument::OPTIONAL, "A DateTime from today to the past to extract. . Allowed format: $defaultFormat. Default: yesterday", (new \DateTime())->modify('yesterday')->format($defaultFormat))
             ->addOption('offset', null, InputOption::VALUE_OPTIONAL, 'Offset', 0)
             ->addOption('limit', null, InputOption::VALUE_OPTIONAL, 'Limit', 10000)
-            ->addOption('clear', null, InputOption::VALUE_OPTIONAL, 'Clear tempory file', false);
+            ->addOption('clear', null, InputOption::VALUE_OPTIONAL, 'Clear temporary file', false);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -77,23 +81,27 @@ final class ImportEventsCommand extends Command
         }
 
         $dateTime = \DateTime::createFromFormat((new DateTime())->format, $importEventsDTO->dateTime);
-        $ghArchiveConfiguration = new GhArchiveConfiguration($dateTime);
-        $ghArchiveConnection = new GhArchiveConnection($ghArchiveConfiguration);
-        $filePath = $ghArchiveConnection->getFilePathForOneHour();
-        $tmpFile = $this->tmpDir.$ghArchiveConnection->getFilenameForOneHour();
+
+        $this->ghArchiveClientWrapper->setDateTime($dateTime);
+
+        $filePath = $this->ghArchiveClientWrapper->getGhArchiveConnection()->getFilePathForOneHour();
+        $dateToExtract = $this->ghArchiveClientWrapper->getGhArchiveConnection()->getGhArchiveConfiguration()->getDate();
+        $hourToExtract = $this->ghArchiveClientWrapper->getGhArchiveConnection()->getGhArchiveConfiguration()->getHour();
+
         $nbPersisted = 0;
 
-        $output->writeln("Extract for {$ghArchiveConfiguration->getDate()} from {$ghArchiveConfiguration->getHour()}:00:00 to {$ghArchiveConfiguration->getHour()}:59:59");
+        $output->writeln("Extract for $dateToExtract from $hourToExtract:00:00 to $hourToExtract:59:59");
         $output->writeln("Offset {$importEventsDTO->offset}. Limit {$importEventsDTO->limit}");
 
-        if (!$this->filesystem->exists($tmpFile)) {
+        if (!$this->ghArchiveClientWrapper->isStoredFileExists()) {
             $output->writeln("Will download this file $filePath");
-            $this->filesystem->dumpFile($tmpFile, file_get_contents($filePath));
+            $this->ghArchiveClientWrapper->getStoredFilePath();
         }
 
+        $tmpFile = $this->ghArchiveClientWrapper->storeFile();
         $output->writeln("Will use this file $tmpFile");
 
-        $eventsJson = array_slice(gzfile($tmpFile), $importEventsDTO->offset, $importEventsDTO->limit);
+        $eventsJson = array_slice($this->ghArchiveClientWrapper->getContent(), $importEventsDTO->offset, $importEventsDTO->limit);
 
         $output->writeln(count($eventsJson).' events found');
         $progressBar = new ProgressBar($output, $importEventsDTO->limit);
@@ -125,8 +133,8 @@ final class ImportEventsCommand extends Command
             $this->entityManager->flush();
         }
 
-        if ($input->getArgument('clear')) {
-            $this->filesystem->remove($tmpFile);
+        if ($input->getOption('clear')) {
+            $this->ghArchiveClientWrapper->removeStoredFile();
         }
 
         $output->writeln($nbPersisted.' written');
@@ -154,6 +162,9 @@ final class ImportEventsCommand extends Command
         $constraintViolationList = $this->validator->validate($event);
 
         if ($constraintViolationList->count() > 0) {
+            dump($constraintViolationList);
+            dump($event->getCreatedAt()); die;
+
             $this->logger->warning('Constraint violation', ['violations' => $constraintViolationList]);
             throw new \RuntimeException("Constraint violation: $constraintViolationList");
         }

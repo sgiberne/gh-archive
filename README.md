@@ -22,10 +22,6 @@ For local use, you can use this docker https://github.com/sgiberne/docker-php.gi
 ## Design pattern
 This project uses:
 - ADR pattern
-- Injection dependency
-- Factory
-- Builder
-- DTO
 
 ## Documentation
 - https://github.com/pmjones/adr

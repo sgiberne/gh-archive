@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\DependencyInjection;
+namespace App\Domain\GhArchive;
 
 class GhArchiveConfiguration
 {
@@ -8,11 +8,6 @@ class GhArchiveConfiguration
     private const FILE_TYPE = '.json.gz';
 
     private \DateTime $dateTime;
-
-    public function __construct(\DateTime $dateTime)
-    {
-        $this->dateTime = $dateTime;
-    }
 
     public function getHost(): string
     {
@@ -29,13 +24,20 @@ class GhArchiveConfiguration
         return $this->dateTime->format('Y-m-d H:m:i');
     }
 
-    public function getDate(): string
+    public function setDateTime(\DateTime $dateTime): self
     {
-        return $this->dateTime->format('Y-m-d');
+        $this->dateTime = $dateTime;
+
+        return $this;
     }
 
-    public function getHour(): string
+    public function getDate(): ?string
     {
-        return $this->dateTime->format('H');
+        return $this->dateTime instanceof \DateTime ? $this->dateTime->format('Y-m-d') : null;
+    }
+
+    public function getHour(): ?int
+    {
+        return $this->dateTime instanceof \DateTime ? $this->dateTime->format('H') : null;
     }
 }

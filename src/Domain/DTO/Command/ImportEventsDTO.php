@@ -9,7 +9,6 @@ class ImportEventsDTO
 {
     /**
      * @Assert\Type("string")
-     * @Assert\Length(19)
      * @Assert\DateTime()
      * @AppAssert\LessThan("today")
      */
@@ -17,14 +16,12 @@ class ImportEventsDTO
 
     /**
      * @Assert\NotBlank
-     * @Assert\Type("int")
      * @Assert\GreaterThanOrEqual(0)
      */
     public int $offset;
 
     /**
      * @Assert\NotBlank
-     * @Assert\Type("int")
      * @Assert\GreaterThan(0)
      */
     public int $limit;

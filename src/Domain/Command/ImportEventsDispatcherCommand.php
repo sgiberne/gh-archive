@@ -2,9 +2,8 @@
 
 namespace App\Domain\Command;
 
-use App\Domain\DependencyInjection\GhArchiveConfiguration;
-use App\Domain\DependencyInjection\GhArchiveConnection;
 use App\Domain\DTO\Command\ImportEventsDTO;
+use App\Domain\GhArchive\GhArchiveClientWrapper;
 use App\Domain\Message\ImportEventMessage;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -13,7 +12,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -22,22 +20,19 @@ final class ImportEventsDispatcherCommand extends Command
 {
     protected static $defaultName = 'app:import:events-dispatcher';
 
-    private string $tmpDir;
+    private GhArchiveClientWrapper $ghArchiveClientWrapper;
     private ValidatorInterface $validator;
     private MessageBusInterface $messageBus;
-    private Filesystem $filesystem;
     private LoggerInterface $logger;
 
     public function __construct(
-        string $tmpDir,
+        GhArchiveClientWrapper $ghArchiveClientWrapper,
         MessageBusInterface $messageBus,
         ValidatorInterface $validator,
-        Filesystem $filesystem,
         LoggerInterface $importEventsLogger,
         string $name = null
     ) {
-        $this->tmpDir = $tmpDir;
-        $this->filesystem = $filesystem;
+        $this->ghArchiveClientWrapper = $ghArchiveClientWrapper;
         $this->messageBus = $messageBus;
         $this->validator = $validator;
         $this->logger = $importEventsLogger;
@@ -66,19 +61,20 @@ final class ImportEventsDispatcherCommand extends Command
         }
 
         $dateTime = \DateTime::createFromFormat((new DateTime())->format, $importEventsDTO->dateTime);
-        $ghArchiveConfiguration = new GhArchiveConfiguration($dateTime);
-        $ghArchiveConnection = new GhArchiveConnection($ghArchiveConfiguration);
 
-        $filePath = $ghArchiveConnection->getFilePathForOneHour();
-        $tmpFile = $this->tmpDir.$ghArchiveConnection->getFilenameForOneHour();
+        $this->ghArchiveClientWrapper->setDateTime($dateTime);
 
-        $output->writeln("Extract for {$ghArchiveConfiguration->getDate()} from {$ghArchiveConfiguration->getHour()}:00:00 to {$ghArchiveConfiguration->getHour()}:59:59");
+        $filePath = $this->ghArchiveClientWrapper->getGhArchiveConnection()->getFilePathForOneHour();
+        $dateToExtract = $this->ghArchiveClientWrapper->getGhArchiveConnection()->getGhArchiveConfiguration()->getDate();
+        $hourToExtract = $this->ghArchiveClientWrapper->getGhArchiveConnection()->getGhArchiveConfiguration()->getHour();
+
+        $output->writeln("Extract for $dateToExtract from $hourToExtract:00:00 to $hourToExtract:59:59");
         $output->writeln("Will download this file $filePath");
+
+        $tmpFile = $this->ghArchiveClientWrapper->storeFile();
         $output->writeln("Will use this file $tmpFile");
 
-        $this->filesystem->dumpFile($tmpFile, file_get_contents($filePath));
-
-        $eventsJson = gzfile($tmpFile);
+        $eventsJson = $this->ghArchiveClientWrapper->getContent();
         $nbEvents = count($eventsJson);
 
         $output->writeln("$nbEvents events found");
@@ -87,7 +83,7 @@ final class ImportEventsDispatcherCommand extends Command
 
         for ($i = $importEventsDTO->offset; $i <= $nbEvents; $i += $importEventsDTO->limit) {
             $importEventMessage = new ImportEventMessage(
-                $ghArchiveConfiguration->getDateTime(),
+                $this->ghArchiveClientWrapper->getGhArchiveConnection()->getGhArchiveConfiguration()->getDateTime(),
                 $i,
                 $importEventsDTO->limit,
                 ($nbEvents + $importEventsDTO->limit) > $nbEvents

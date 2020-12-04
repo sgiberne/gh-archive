@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Domain\builder;
+namespace App\Tests\Domain\Builder;
 
 use App\Domain\Builder\ActorBuilder;
 use App\Domain\Entity\Actor;

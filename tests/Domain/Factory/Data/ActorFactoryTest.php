@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Domain\Factory\Data;
+namespace App\Tests\Domain\Factory\Data;
 
 use App\Domain\Entity\Actor;
 use App\Domain\Factory\Data\ActorFactory;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Domain\Command\DTO;
+namespace App\Tests\Domain\DTO\Command;
 
 use App\Domain\DTO\Command\ImportEventsDTO;
 use PHPUnit\Framework\TestCase;

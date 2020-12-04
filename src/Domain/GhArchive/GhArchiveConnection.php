@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\DependencyInjection;
+namespace App\Domain\GhArchive;
 
 class GhArchiveConnection
 {
@@ -11,6 +11,11 @@ class GhArchiveConnection
     public function __construct(GhArchiveConfiguration $ghArchiveConfiguration)
     {
         $this->ghArchiveConfiguration = $ghArchiveConfiguration;
+    }
+
+    public function getGhArchiveConfiguration(): GhArchiveConfiguration
+    {
+        return $this->ghArchiveConfiguration;
     }
 
     public function getFilenameForOneHour(): string

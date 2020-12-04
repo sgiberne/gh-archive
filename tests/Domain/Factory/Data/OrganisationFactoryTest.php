@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Domain\Factory\Data;
+namespace App\Tests\Domain\Factory\Data;
 
 use App\Domain\Entity\Organisation;
 use App\Domain\Factory\Data\OrganisationFactory;
