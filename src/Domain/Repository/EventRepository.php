@@ -6,8 +6,10 @@ use App\Domain\Entity\Event;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Validator\Constraints\DateTime;
 
+/**
+ * @extends ServiceEntityRepository<Event>
+ */
 final class EventRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -15,6 +17,15 @@ final class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+    /**
+     * @param array<string, string|\DateTime> $criteria
+     * @param null|string $sort
+     * @param null|string $order
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return QueryBuilder
+     * @throws \JsonException
+     */
     public function findByCriteriaQueryBuilder(array $criteria, string $sort = null, string $order = null, int $limit = null, int $offset = null): QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('e');
@@ -32,7 +43,7 @@ final class EventRepository extends ServiceEntityRepository
         }
 
         foreach ($criteria as $key => $criterion) {
-            if ('createdAt' === $key && $criterion instanceof DateTime) {
+            if ('createdAt' === $key && $criterion instanceof \DateTime) {
                 // fait la recherche sur la journée
                 $startDate = clone $criterion->setTime(0, 0, 0);
                 $endDate = clone $criterion->setTime(23, 59, 59);
@@ -41,7 +52,7 @@ final class EventRepository extends ServiceEntityRepository
                     ->andWhere("e.$key <= :endDate")
                     ->setParameter('startDate', $startDate)
                     ->setParameter('endDate', $endDate);
-            } elseif ('payload' === $key) {
+            } elseif ('payload' === $key && is_string($criterion)) {
                 // cherche dans le json du payload
                 $dataCriterion = json_decode($criterion, true, 512, JSON_THROW_ON_ERROR);
                 $candidate = current($dataCriterion);
@@ -58,11 +69,27 @@ final class EventRepository extends ServiceEntityRepository
         return $queryBuilder;
     }
 
+    /**
+     * @param array<string, string|\DateTime> $criteria
+     * @param null|string $sort
+     * @param null|string $order
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return array<int, Event>
+     * @throws \JsonException
+     */
     public function findByCriteria(array $criteria, string $sort = null, string $order = null, int $limit = null, int $offset = null): array
     {
         return $this->findByCriteriaQueryBuilder($criteria, $sort, $order, $limit, $offset)->getQuery()->getResult();
     }
 
+    /**
+     * @param array<string, string|\DateTime> $criteria
+     * @return int
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \JsonException
+     */
     public function countByCriteria(array $criteria): int
     {
         return $this

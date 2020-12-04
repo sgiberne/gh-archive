@@ -57,6 +57,7 @@ class Actor
 
     /**
      * @ORM\OneToMany(targetEntity="App\Domain\Entity\Event", mappedBy="actor")
+     * @var Collection<int, Event>
      */
     private Collection $events;
 
@@ -138,7 +139,7 @@ class Actor
     }
 
     /**
-     * @return Collection|Event[]
+     * @return Collection<int, Event>
      */
     public function getEvents(): Collection
     {

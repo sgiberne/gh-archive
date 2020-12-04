@@ -32,6 +32,7 @@ class Event
     /**
      * @ORM\Column(type="json")
      * @Groups("api")
+     * @var array<string, string|array>
      */
     private array $payload = [];
 
@@ -52,13 +53,13 @@ class Event
      * @ORM\ManyToOne(targetEntity="App\Domain\Entity\Repository", cascade={"persist"})
      * @Groups("api")
      */
-    private Repository $repository;
+    private ?Repository $repository;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Domain\Entity\Actor", cascade={"persist"})
      * @Groups("api")
      */
-    private Actor $actor;
+    private ?Actor $actor;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Domain\Entity\Organisation", cascade={"persist"})
@@ -90,11 +91,18 @@ class Event
         return $this;
     }
 
+    /**
+     * @return array<string, string|array>
+     */
     public function getPayload(): array
     {
         return $this->payload;
     }
 
+    /**
+     * @param array<string, string|array> $payload
+     * @return $this
+     */
     public function setPayload(array $payload): self
     {
         $this->payload = $payload;
@@ -131,7 +139,7 @@ class Event
         return $this->repository;
     }
 
-    public function setRepository(Repository $repository): self
+    public function setRepository(?Repository $repository): self
     {
         $this->repository = $repository;
 
@@ -143,7 +151,7 @@ class Event
         return $this->actor;
     }
 
-    public function setActor(Actor $actor): self
+    public function setActor(?Actor $actor): self
     {
         $this->actor = $actor;
 

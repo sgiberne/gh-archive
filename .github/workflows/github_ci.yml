@@ -1,4 +1,4 @@
-name: PHP Composer
+name: ci
 
 on:
   push:
@@ -12,7 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
 
     - name: Validate composer.json and composer.lock
       run: composer validate
@@ -30,8 +31,11 @@ jobs:
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
 
-    - name: Run php-cs-fixer
-      run: ./vendor/bin/php-cs-fixer fix
+    - name: PHP Code Style (phpcs)
+      uses: chindit/actions-phpcs@master
+
+    - name: PHPStan
+      uses: chindit/actions-phpstan@master
 
     - name: Run test suite
       run: composer run-script test

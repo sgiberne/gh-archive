@@ -19,6 +19,9 @@ class RepositoryBuilder
         $this->repositoryFactory = $repositoryFactory;
     }
 
+    /**
+     * @param string[] $data
+     */
     public function build(array $data): ?Repository
     {
         if (isset($data['id'])) {

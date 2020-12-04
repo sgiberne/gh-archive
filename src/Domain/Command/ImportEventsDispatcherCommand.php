@@ -52,15 +52,28 @@ final class ImportEventsDispatcherCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $importEventsDTO = new ImportEventsDTO($input->getArgument('dateTime'), $input->getOption('offset'), $input->getOption('limit'));
+        $dateTime = $input->getArgument('dateTime');
+        $offset = $input->getOption('offset');
+        $limit = $input->getOption('limit');
+
+        if (!is_string($dateTime) || !is_numeric($offset) || !is_numeric($limit)) {
+            throw new \RuntimeException('Invalid type given');
+        }
+
+        $importEventsDTO = new ImportEventsDTO($dateTime, (int)$offset, (int)$limit);
+
         $constraintViolationList = $this->validator->validate($importEventsDTO);
 
         if ($constraintViolationList->count() > 0) {
             $this->logger->warning('Constraint violation', ['violations' => $constraintViolationList]);
-            throw new \RuntimeException("Constraint violation: $constraintViolationList");
+            throw new \RuntimeException('Constraint violation');
         }
 
         $dateTime = \DateTime::createFromFormat((new DateTime())->format, $importEventsDTO->dateTime);
+
+        if ($dateTime === false) {
+            throw new \RuntimeException('Invalid dateTime');
+        }
 
         $this->ghArchiveClientWrapper->setDateTime($dateTime);
 

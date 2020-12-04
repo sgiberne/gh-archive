@@ -19,6 +19,9 @@ class ActorBuilder
         $this->actorFactory = $actorFactory;
     }
 
+    /**
+     * @param string[] $data
+     */
     public function build(array $data): ?Actor
     {
         if (isset($data['id'])) {

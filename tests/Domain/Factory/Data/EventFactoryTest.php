@@ -45,10 +45,6 @@ class EventFactoryTest extends TestCase
             ],
             (new Event())
                 ->setId(1)
-                ->setCreatedAt(null)
-                ->setPublic(true)
-                ->setType('')
-                ->setPayload([])
                 ->setActor(
                     (new Actor())
                         ->setId(1)

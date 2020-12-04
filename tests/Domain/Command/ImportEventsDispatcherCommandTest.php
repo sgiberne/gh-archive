@@ -143,16 +143,16 @@ class ImportEventsDispatcherCommandTest extends KernelTestCase
             '2019-01-29 22:00:00',
             'offset',
             1000,
-            \TypeError::class,
-            'Argument 2 passed to App\Domain\DTO\Command\ImportEventsDTO::__construct() must be of the type int, string given',
+            \RuntimeException::class,
+            'Invalid type given',
         ];
 
         yield [
             '2019-01-29 22:00:00',
             12,
             'limit',
-            \TypeError::class,
-            'Argument 3 passed to App\Domain\DTO\Command\ImportEventsDTO::__construct() must be of the type int, string given',
+            \RuntimeException::class,
+            'Invalid type given',
         ];
     }
 }

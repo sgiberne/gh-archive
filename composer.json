@@ -8,6 +8,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-zlib": "*",
+        "ext-json": "*",
         "doctrine/doctrine-bundle": "^2.2",
         "doctrine/orm": "^2.7",
         "symfony/console": "5.1.*",
@@ -23,6 +24,11 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
+        "jangregor/phpstan-prophecy": "^0.8.1",
+        "phpstan/extension-installer": "^1.0",
+        "phpstan/phpstan": "^0.12.58",
+        "phpstan/phpstan-doctrine": "^0.12.25",
+        "phpstan/phpstan-symfony": "^0.12.11",
         "symfony/phpunit-bridge": "^5.1"
     },
     "config": {
@@ -63,7 +69,13 @@
             "@auto-scripts"
         ],
         "test": [
-            "bin/phpunit tests"
+            "@php bin/phpunit tests"
+        ],
+        "phpstan": [
+            "@php bin/console cache:warmup --env=dev",
+            "@php bin/console cache:warmup --env=test",
+            "@phpstan-general",
+            "@phpstan-tests"
         ]
     },
     "conflict": {

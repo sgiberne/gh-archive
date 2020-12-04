@@ -17,24 +17,40 @@ class EventFactory
         $this->organisationFactory = $organisationFactory;
     }
 
+    /**
+     * @param array<string, string|int|array> $data
+     * @return Event
+     * @throws \Exception
+     */
     public function createFromArray(array $data): Event
     {
-        if (!isset($data['id'])) {
-            throw new \BadMethodCallException('An id must be defined');
+        if (!isset($data['id']) || !is_numeric($data['id'])) {
+            throw new \BadMethodCallException('An id must be defined and must be a numeric');
         }
 
-        $actor = isset($data['actor']) && !empty($data['actor']) ? $this->actorFactory->createFromArray($data['actor']) : null;
-        $repository = isset($data['repo']) && !empty($data['repo']) ? $this->repositoryFactor->createFromArray($data['repo']) : null;
-        $organisation = isset($data['org']) && !empty($data['org']) ? $this->organisationFactory->createFromArray($data['org']) : null;
+        $actor = isset($data['actor']) && !empty($data['actor']) && is_array($data['actor']) ? $this->actorFactory->createFromArray($data['actor']) : null;
+        $repository = isset($data['repo']) && !empty($data['repo']) && is_array($data['repo'])  ? $this->repositoryFactor->createFromArray($data['repo']) : null;
+        $organisation = isset($data['org']) && !empty($data['org']) && is_array($data['org']) ? $this->organisationFactory->createFromArray($data['org']) : null;
 
-        return (new Event())
-            ->setId($data['id'])
+        $event = (new Event())
+            ->setId((int)$data['id'])
             ->setRepository($repository)
             ->setOrganisation($organisation)
             ->setActor($actor)
-            ->setType($data['type'] ?? '')
-            ->setPayload($data['payload'] ?? [])
-            ->setPublic($data['public'] ?? true)
-            ->setCreatedAt(isset($data['created_at']) ? new \DateTime($data['created_at']) : null);
+            ->setPublic(isset($data['public']) ? (bool)$data['public'] : false);
+
+        if (isset($data['payload']) && is_array($data['payload'])) {
+            $event->setPayload($data['payload']);
+        }
+
+        if (isset($data['type']) && is_string($data['type'])) {
+            $event->setType($data['type']);
+        }
+
+        if (isset($data['created_at']) && is_string($data['created_at'])) {
+            $event->setCreatedAt(new \DateTime($data['created_at']));
+        }
+
+        return $event;
     }
 }

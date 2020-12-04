@@ -7,7 +7,7 @@ class GhArchiveConfiguration
     private const FILE_TYPE = '.json.gz';
 
     private string $ghArchiveHost;
-    private \DateTime $dateTime;
+    private ?\DateTime $dateTime;
 
     public function __construct(string $ghArchiveHost)
     {
@@ -41,7 +41,7 @@ class GhArchiveConfiguration
         return $this->dateTime instanceof \DateTime ? $this->dateTime->format('Y-m-d') : null;
     }
 
-    public function getHour(): ?int
+    public function getHour(): ?string
     {
         return $this->dateTime instanceof \DateTime ? $this->dateTime->format('H') : null;
     }

@@ -3,11 +3,9 @@
 namespace App\Domain\Command;
 
 use App\Domain\Builder\EventBuilder;
-use App\Domain\GhArchive\GhArchiveClientWrapper;
-use App\Domain\GhArchive\GhArchiveConfiguration;
-use App\Domain\GhArchive\GhArchiveConnection;
 use App\Domain\DTO\Command\ImportEventsDTO;
 use App\Domain\Entity\Event;
+use App\Domain\GhArchive\GhArchiveClientWrapper;
 use App\Domain\Repository\EventRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -17,7 +15,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -27,29 +24,23 @@ final class ImportEventsCommand extends Command
 
     private const FLUSH_AT = 5000;
 
-    private string $tmpDir;
     private GhArchiveClientWrapper $ghArchiveClientWrapper;
     private EventRepository $eventRepository;
     private ValidatorInterface $validator;
     private EventBuilder $eventBuilder;
     private EntityManagerInterface $entityManager;
-    private Filesystem $filesystem;
     private LoggerInterface $logger;
 
     public function __construct(
-        string $tmpDir,
         GhArchiveClientWrapper $ghArchiveClientWrapper,
         EventRepository $eventRepository,
         ValidatorInterface $validator,
         EventBuilder $eventBuilder,
         EntityManagerInterface $entityManager,
-        Filesystem $filesystem,
         LoggerInterface $importEventsLogger,
         string $name = null
     ) {
-        $this->tmpDir = $tmpDir;
         $this->ghArchiveClientWrapper = $ghArchiveClientWrapper;
-        $this->filesystem = $filesystem;
         $this->eventRepository = $eventRepository;
         $this->validator = $validator;
         $this->eventBuilder = $eventBuilder;
@@ -72,15 +63,28 @@ final class ImportEventsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $importEventsDTO = new ImportEventsDTO($input->getArgument('dateTime'), $input->getOption('offset'), $input->getOption('limit'));
+        $dateTime = $input->getArgument('dateTime');
+        $offset = $input->getOption('offset');
+        $limit = $input->getOption('limit');
+
+        if (!is_string($dateTime) || !is_numeric($offset) || !is_numeric($limit)) {
+            throw new \RuntimeException('Invalid type given');
+        }
+
+        $importEventsDTO = new ImportEventsDTO($dateTime, (int)$offset, (int)$limit);
+
         $constraintViolationList = $this->validator->validate($importEventsDTO);
 
         if ($constraintViolationList->count() > 0) {
             $this->logger->warning('Constraint violation', ['violations' => $constraintViolationList]);
-            throw new \RuntimeException("Constraint violation: $constraintViolationList");
+            throw new \RuntimeException('Constraint violation');
         }
 
         $dateTime = \DateTime::createFromFormat((new DateTime())->format, $importEventsDTO->dateTime);
+
+        if ($dateTime === false) {
+            throw new \RuntimeException('Invalid dateTime');
+        }
 
         $this->ghArchiveClientWrapper->setDateTime($dateTime);
 
@@ -106,6 +110,7 @@ final class ImportEventsCommand extends Command
         $output->writeln(count($eventsJson).' events found');
         $progressBar = new ProgressBar($output, $importEventsDTO->limit);
 
+        /** @var string $eventJson */
         foreach ($eventsJson as $key => $eventJson) {
             try {
                 $event = $this->buildEvent($eventJson);
@@ -162,11 +167,8 @@ final class ImportEventsCommand extends Command
         $constraintViolationList = $this->validator->validate($event);
 
         if ($constraintViolationList->count() > 0) {
-            dump($constraintViolationList);
-            dump($event->getCreatedAt()); die;
-
             $this->logger->warning('Constraint violation', ['violations' => $constraintViolationList]);
-            throw new \RuntimeException("Constraint violation: $constraintViolationList");
+            throw new \RuntimeException("Constraint violation");
         }
 
         return $event;

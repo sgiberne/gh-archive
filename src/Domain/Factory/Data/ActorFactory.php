@@ -6,6 +6,10 @@ use App\Domain\Entity\Actor;
 
 class ActorFactory
 {
+    /**
+     * @param array<string, string|int> $data
+     * @return Actor
+     */
     public function createFromArray(array $data): Actor
     {
         if (!isset($data['id'])) {
@@ -13,11 +17,11 @@ class ActorFactory
         }
 
         return (new Actor())
-            ->setId($data['id'])
-            ->setUrl($data['url'] ?? '')
-            ->setAvatarUrl($data['avatar_url'] ?? '')
-            ->setDisplayLogin($data['display_login'] ?? '')
-            ->setGravatarId($data['gravatar_id'] ?? '')
-            ->setLogin($data['login'] ?? '');
+            ->setId((int)$data['id'])
+            ->setUrl(isset($data['url']) ? (string)$data['url'] : '')
+            ->setAvatarUrl(isset($data['avatar_url']) ? (string)$data['avatar_url'] : '')
+            ->setDisplayLogin(isset($data['display_login']) ? (string)$data['display_login'] : '')
+            ->setGravatarId(isset($data['gravatar_id']) ? (string)$data['gravatar_id'] : '')
+            ->setLogin(isset($data['login']) ? (string)$data['login'] : '');
     }
 }

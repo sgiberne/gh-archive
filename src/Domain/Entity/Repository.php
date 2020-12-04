@@ -39,6 +39,7 @@ class Repository
 
     /**
      * @ORM\OneToMany(targetEntity="App\Domain\Entity\Event", mappedBy="repository")
+     * @var Collection<int, Event>
      */
     private Collection $events;
 
@@ -84,7 +85,7 @@ class Repository
     }
 
     /**
-     * @return Collection|Event[]
+     * @return Collection<int, Event>
      */
     public function getEvents(): Collection
     {

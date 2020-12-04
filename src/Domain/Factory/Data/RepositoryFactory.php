@@ -6,6 +6,10 @@ use App\Domain\Entity\Repository;
 
 class RepositoryFactory
 {
+    /**
+     * @param array<string, string|int> $data
+     * @return Repository
+     */
     public function createFromArray(array $data): Repository
     {
         if (!isset($data['id'])) {
@@ -13,8 +17,8 @@ class RepositoryFactory
         }
 
         return (new Repository())
-            ->setId($data['id'])
-            ->setUrl($data['url'] ?? '')
-            ->setName($data['name'] ?? '');
+            ->setId((int)$data['id'])
+            ->setUrl(isset($data['url']) ? (string)$data['url'] : '')
+            ->setName(isset($data['name']) ? (string)$data['name'] : '');
     }
 }

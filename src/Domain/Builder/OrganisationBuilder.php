@@ -19,6 +19,9 @@ class OrganisationBuilder
         $this->organisationFactory = $organisationFactory;
     }
 
+    /**
+     * @param string[] $data
+     */
     public function build(array $data): ?Organisation
     {
         if (isset($data['id'])) {

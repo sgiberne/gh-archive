@@ -10,6 +10,7 @@ class GhArchiveClientWrapper
     private string $tmpDir;
     private GhArchiveConnection $ghArchiveConnection;
 
+    /** @var array<int, array> */
     private array $content = [];
 
     public function __construct(string $tmpDir, Filesystem $filesystem, GhArchiveConnection $ghArchiveConnection)
@@ -26,7 +27,7 @@ class GhArchiveClientWrapper
 
     public function setDateTime(\DateTime $dateTime): self
     {
-        $hour = $dateTime->format('H');
+        $hour = (int)$dateTime->format('H');
         $dateTime->setTime($hour, 0, 0);
         $this->ghArchiveConnection->getGhArchiveConfiguration()->setDateTime($dateTime);
 
@@ -41,7 +42,13 @@ class GhArchiveClientWrapper
             throw new \RuntimeException($this->getFilepath().' file does not exist');
         }
 
-        $this->filesystem->dumpFile($newFile, file_get_contents($this->getFilepath()));
+        $content = file_get_contents($this->getFilepath());
+
+        if (!is_string($content)) {
+            throw new \RuntimeException($this->getFilepath().' has an empty content');
+        }
+
+        $this->filesystem->dumpFile($newFile, $content);
 
         return $newFile;
     }
@@ -53,6 +60,9 @@ class GhArchiveClientWrapper
         return $this->filesystem->exists($filePath) && is_readable($filePath);
     }
 
+    /**
+     * @return array<int, array>
+     */
     public function getContent(): array
     {
         if (!empty($this->content)) {

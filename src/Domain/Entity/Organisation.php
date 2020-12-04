@@ -51,6 +51,7 @@ class Organisation
 
     /**
      * @ORM\OneToMany(targetEntity="App\Domain\Entity\Event", mappedBy="organisation")
+     * @var Collection<int, Event>
      */
     private Collection $events;
 
@@ -120,7 +121,7 @@ class Organisation
     }
 
     /**
-     * @return Collection|Event[]
+     * @return Collection<int, Event>
      */
     public function getEvents(): Collection
     {
